@@ -1,11 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Localization;
-using Microsoft.Identity.Client;
-using XotaApi2.Models;
 
 namespace XotaApi2.HttpClients;
 
