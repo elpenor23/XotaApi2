@@ -1,7 +1,11 @@
-var builder = WebApplication.CreateBuilder(args);
+using XotaApi2.Configuration;
+
+var builder = WebApplication.CreateBuilder(args)
+    .ConfigureOptions()
+    .ConfigureHttpClients()
+    .ConfigureManagers();
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
