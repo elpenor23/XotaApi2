@@ -1,23 +1,26 @@
+using Microsoft.Extensions.Options;
+using Scalar.AspNetCore;
 using XotaApi2.Configuration;
 
 var builder = WebApplication.CreateBuilder(args)
     .ConfigureOptions()
     .ConfigureHttpClients()
-    .ConfigureManagers();
-
-// Add services to the container.
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+    .ConfigureManagers()
+    .ConfigureServices();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.MapOpenApi();
+    app.MapScalarApiReference(options =>
+    {
+        options
+            .WithTitle("Xota Aggrigator")
+            .WithTheme(ScalarTheme.Solarized)
+            .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.AsyncHttp);
+    });
 }
 
 app.UseHttpsRedirection();

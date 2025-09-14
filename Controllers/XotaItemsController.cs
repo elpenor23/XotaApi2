@@ -10,7 +10,7 @@ public class XotaItemsController(IXotaDataManager dataManager) : ControllerBase
 {
     // GET: api/XotaItems
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<IXotaItem>>> GetXotaItem()
+    public async Task<ActionResult<IEnumerable<XotaItem>>> GetXotaItem()
     {
         var data = await dataManager.GetXotaItems();
 

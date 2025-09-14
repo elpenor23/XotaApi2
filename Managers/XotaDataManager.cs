@@ -100,14 +100,14 @@ public class XotaDataManager(IPotaClient potaClient, ISotaClient sotaClient, IRa
         return data;
     }
 
-    private static List<IXotaItem> RemoveDuplicates(List<IXotaItem> xotaList)
+    private static List<XotaItem> RemoveDuplicates(List<XotaItem> xotaList)
     {
         //TODO: Fix this when we have determined the best ID that will work
         //      for all Xota types.
 
         var nonDupList = xotaList.GroupBy(x => x.Id).Select(y => y.First()).ToList();
 
-        foreach (IXotaItem xm in nonDupList){
+        foreach (var xm in nonDupList){
 
         }
 
