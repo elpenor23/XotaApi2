@@ -128,8 +128,9 @@ namespace XotaApi2.Models
             {
                 band = 6000;
             }
-            else if ((freq >= 7000 && freq <= 7300) ||
-                (freq >= 7.0 && freq <= 7.3))
+            else if ((freq >= 700000 && freq <= 730000) || 
+                (freq >= 7000 && freq <= 7300) ||
+                (freq >= 7.0 && freq <= 7.3)) 
             {
                 band = 4000;
             }
