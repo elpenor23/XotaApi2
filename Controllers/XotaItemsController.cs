@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using XotaApi2.Models;
 using XotaApi2.Managers;
+using System.Net;
 
 namespace XotaApi2.Controllers;
 
@@ -10,33 +11,50 @@ public class XotaItemsController(IXotaDataManager dataManager) : ControllerBase
 {
     // GET: api/XotaItems
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<XotaItem>>> GetXotaItem()
+    [ProducesResponseType((int)HttpStatusCode.NoContent)]
+    [ProducesResponseType(typeof(IEnumerable<XotaItem>), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> GetXotaItem(int durationMinutes = 24)
     {
-        var data = await dataManager.GetXotaItems();
+        var data = await dataManager.GetXotaItems(durationMinutes);
 
-        if (data.Count == 0) return NotFound();
+        if (data is null || !data.Any()) 
+            return NoContent();
 
         return Ok(data);
     }
 
     [HttpGet("test/pota")]
-    public async Task<ActionResult> TestPota()
+    [ProducesResponseType((int)HttpStatusCode.NoContent)]
+    [ProducesResponseType(typeof(IEnumerable<XotaItem>), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> TestPota()
     {
-        var x = await dataManager.TestPota();
-        return Ok(x);
+        var data = await dataManager.TestPota();
+        return Ok(data);
     }
 
     [HttpGet("test/sota")]
-    public async Task<ActionResult> TestSota()
+    [ProducesResponseType((int)HttpStatusCode.NoContent)]
+    [ProducesResponseType(typeof(IEnumerable<XotaItem>), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> TestSota()
     {
-        var x = await dataManager.TestSota();
-        return Ok(x);
+        var data = await dataManager.TestSota();
+
+        if (data is null || !data.Any())
+            return NoContent();
+            
+        return Ok(data);
     }
 
     [HttpGet("test/radar")]
-    public async Task<ActionResult> TestRadar()
+    [ProducesResponseType((int)HttpStatusCode.NoContent)]
+    [ProducesResponseType(typeof(IEnumerable<XotaItem>), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> TestRadar()
     {
-        var x = await dataManager.TestRadar();
-        return Ok(x);
+        var data = await dataManager.TestRadar();
+
+        if (data is null || !data.Any())
+            return NoContent();
+            
+        return Ok(data);
     }
 }
