@@ -1,3 +1,5 @@
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using XotaApi2.HealthChecks;
 
@@ -12,5 +14,18 @@ public static class HealthCheckConfiguration
             .AddCheck<SotaHealthCheck>("Sota-Api", HealthStatus.Unhealthy);
 
         return builder;
+    }
+
+    public static WebApplication AddHeathChecks(this WebApplication app)
+    {
+        app.MapGet("/health", () => "Healthy");
+
+        app.MapHealthChecks("/health-status",
+            new HealthCheckOptions
+            {
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            });
+            
+        return app;
     }
 }

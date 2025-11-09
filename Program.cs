@@ -1,5 +1,3 @@
-using HealthChecks.UI.Client;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Scalar.AspNetCore;
 using Serilog;
 using XotaApi2.Configuration;
@@ -16,11 +14,7 @@ builder.Host.UseSerilog((context, configuration) =>
 
 var app = builder.Build();
 
-app.MapHealthChecks("/health",
-    new HealthCheckOptions
-    {
-        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-    });
+app.AddHeathChecks();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
