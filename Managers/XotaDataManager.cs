@@ -1,12 +1,14 @@
+using Microsoft.Extensions.Options;
 using XotaApi2.HttpClients;
 using XotaApi2.Models;
 
 namespace XotaApi2.Managers;
 
-public class XotaDataManager(IPotaClient potaClient, ISotaClient sotaClient, IRadarClient radarClient, ILogger<XotaDataManager> logger) : IXotaDataManager
+public class XotaDataManager(IPotaClient potaClient, ISotaClient sotaClient, IRadarClient radarClient, ILogger<XotaDataManager> logger, IOptions<ProgramOptions> options) : IXotaDataManager
 {
+    private readonly ProgramOptions _options = options.Value;
     public async Task<List<XotaItem>?> TestPota(){
-        var potaTestData = await potaClient.GetXotaListAsync<List<PotaItem>>();
+        var potaTestData = await potaClient.GetXotaListAsync();
         
         var returnData = potaTestData?.Select(x => new XotaItem(x)).ToList();
 
@@ -14,7 +16,7 @@ public class XotaDataManager(IPotaClient potaClient, ISotaClient sotaClient, IRa
     }
 
     public async Task<List<XotaItem>?> TestSota(){
-        var sotaTestData = await sotaClient.GetXotaListAsync<List<SotaItem>>();
+        var sotaTestData = await sotaClient.GetXotaListAsync();
 
         var returnData = sotaTestData?.Select(x => new XotaItem(x)).ToList();
 
@@ -31,7 +33,7 @@ public class XotaDataManager(IPotaClient potaClient, ISotaClient sotaClient, IRa
 
     public async Task<List<XotaItem>> GetXotaItems(int durationMinutes = 0,string[]? xotaEntities = null)
     {
-        xotaEntities = xotaEntities ?? ["All"];
+        xotaEntities ??= ["All"];
 
         var data = await GetXotaItemsByEntity(xotaEntities, durationMinutes);
 
@@ -52,9 +54,15 @@ public class XotaDataManager(IPotaClient potaClient, ISotaClient sotaClient, IRa
 
         if (xotaEntities.Contains("All"))
         {
-            data.AddRange(await GetPotaItems());
-            data.AddRange(await GetSotaItems());
-            //data.AddRange(await GetRadarItems());
+            if (_options.Pota.Active)
+                data.AddRange(await GetPotaItems());
+
+            if (_options.Sota.Active)
+                data.AddRange(await GetSotaItems());
+
+            if (_options.Radar.Active)
+                data.AddRange(await GetRadarItems());
+
             return data;
         }
 
@@ -67,13 +75,7 @@ public class XotaDataManager(IPotaClient potaClient, ISotaClient sotaClient, IRa
         if (xotaEntities.Contains("RaDAR"))
             data.AddRange(await GetRadarItems());
 
-        //TODO: Each of these should be put into a class with an interface
-        //  So instead of adding code here we can just add a class that implements that interface
-        //  and we can just loop through those classes here maybe with an array so we can just add
-        //  class types to the array and the manager will stay nice and clean and those classes
-        //  can deal with all of the nitty gritty for getting each of the item types
-        //  since we are probably going to have to do more complicated things then just hit API's
-        //  for some of the other types.
+
         logger.LogError("Total Data Count {totalDataCount}", data.Count);
         var minimalData = data.Where(x => x.SpotDateTime > DateTime.Now.AddMinutes(-durationMinutes)).ToList();
 
@@ -85,7 +87,7 @@ public class XotaDataManager(IPotaClient potaClient, ISotaClient sotaClient, IRa
     private async Task<List<XotaItem>> GetPotaItems()
     {
         List<XotaItem> data = [];
-        var itemData = await potaClient.GetXotaListAsync<List<PotaItem>>();
+        var itemData = await potaClient.GetXotaListAsync();
 
         var itemReturnData = itemData?.Select(x => new XotaItem(x));
         
@@ -100,7 +102,7 @@ public class XotaDataManager(IPotaClient potaClient, ISotaClient sotaClient, IRa
     private async Task<List<XotaItem>> GetSotaItems()
     {
         List<XotaItem> data = [];
-        var itemData = await sotaClient.GetXotaListAsync<List<SotaItem>>();
+        var itemData = await sotaClient.GetXotaListAsync();
 
         var itemReturnData = itemData?.Select(x => new XotaItem(x));
         

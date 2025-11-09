@@ -5,9 +5,14 @@ namespace XotaApi2.HttpClients;
 
 public class PotaClient(HttpClient httpClient, IOptions<ProgramOptions> settings) : XotaClientBase(httpClient), IPotaClient
 {
-    public async Task<T?> GetXotaListAsync<T>() where T: class
+    public async Task<List<PotaItem>> GetXotaListAsync()
     {
-        var x = await GetAsync<T>(settings.Value.Pota.ApiEndpoint);
-        return x;
+        var x = await GetAsync<List<PotaItem>>(settings.Value.Pota.ApiEndpoint);
+        return x ?? [];
+    }
+
+    public async Task HealthCheck()
+    {
+        await GetAsync<List<PotaItem>>(settings.Value.Pota.HealthCheck);
     }
 }

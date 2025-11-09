@@ -13,6 +13,11 @@ public class RadarClient(HttpClient httpClient, IOptions<ProgramOptions> setting
         return x;
     }
 
+    public Task HealthCheck()
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<T?> PostXotaListAsync<T>() where T: class
     {
         var x = await PostAsync<T>(settings.Value.Radar.ApiEndpoint, settings.Value.Radar.Page, settings.Value.Radar.Rows);

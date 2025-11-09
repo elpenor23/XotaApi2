@@ -12,6 +12,8 @@ public class Program
 {
     public required string BaseAddress { get; set; }
     public required string ApiEndpoint { get; set; }
+    public required string HealthCheck { get; set; }
+    public required bool Active { get; set; }
     public int Page { get; set; }
     public int Rows { get; set; }
 }

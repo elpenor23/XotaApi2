@@ -7,7 +7,7 @@ namespace XotaApi2.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class XotaItemsController(IXotaDataManager dataManager) : ControllerBase
+public class XotaItemsController(IXotaDataManager dataManager, ILogger<XotaItemsController> logger) : ControllerBase
 {
     // GET: api/XotaItems
     [HttpGet]
@@ -15,6 +15,7 @@ public class XotaItemsController(IXotaDataManager dataManager) : ControllerBase
     [ProducesResponseType(typeof(IEnumerable<XotaItem>), (int)HttpStatusCode.OK)]
     public async Task<IActionResult> GetXotaItem(int durationMinutes = 24)
     {
+        logger.LogInformation("Xota Items Controller / GetZotaItems");
         var data = await dataManager.GetXotaItems(durationMinutes);
 
         if (data is null || !data.Any()) 
