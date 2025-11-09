@@ -9,9 +9,6 @@ var builder = WebApplication.CreateBuilder(args)
     .ConfigureServices()
     .ConfigureHealthChecks();
 
-builder.Host.UseSerilog((context, configuration) =>
-    configuration.ReadFrom.Configuration(context.Configuration));
-
 var app = builder.Build();
 
 app.AddHeathChecks();
